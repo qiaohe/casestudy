@@ -45,7 +45,8 @@ public class CsvReader {
     }
 
     private String replace(String value) {
-        return value.replace("'", " ");
+        String s  =value.replace("'", " ");
+        return s.replace(":", " ");
     }
 
     public void insertTrades() throws IOException, SQLException {
@@ -56,7 +57,8 @@ public class CsvReader {
         final int batchSize = 1000;
         int count = 0;
         for (CSVRecord record : records) {
-            final String query = MessageFormat.format(INSERT_SQL, record.get("Shipper_Name"), record.get("Shipper_Addr_1"), record.get("Shipper_Addr_2"), record.get("Shipper_Addr_3"),
+            final String query = MessageFormat.format(INSERT_SQL, replace(record.get("Shipper_Name")), replace(record.get("Shipper_Addr_1")),
+                    replace(record.get("Shipper_Addr_2")), replace(record.get("Shipper_Addr_3")),
                     replace(record.get("Consignee_Name")), replace(record.get("Consignee_Addr_1")), replace(record.get("Consignee_Addr_2")),
                     replace(record.get("Consignee_Addr_3")), replace(record.get("Notify_Name"))
                     , replace(record.get("Notify_Addr_1")), replace(record.get("Notify_Addr_2")), replace(record.get("Notify_Addr_3")), replace(record.get("Weight"))
@@ -79,8 +81,13 @@ public class CsvReader {
         connection.close();
     }
 
+    public void buildIndex() {
+
+    }
+
+
     public static void main(String[] args) throws IOException, SQLException {
-        CsvReader reader = new CsvReader("F:\\data\\2013_DataSample.csv");
+        CsvReader reader = new CsvReader("F:\\data\\201312.csv");
         reader.insertTrades();
     }
 }
